@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 
 interface IHeader {
   name: string;
@@ -7,11 +6,6 @@ interface IHeader {
 
 export const Header = ({ name }: IHeader) => {
  
-
-  const handleClick = () => {
-    //navigate 
-  
-  };
 
   return (
    <h1>
