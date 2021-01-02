@@ -41,6 +41,23 @@ class CustomForm extends Component<any, any> {
     };
   }
 
+  validateField = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    // var formAux = { ...this.state.form };
+    // var formErr = {...this.state.formErrors};
+    var stateAux = {...this.state};
+    stateAux.form.name = evt.target.value;
+    // formAux.name = evt.target.value;
+ 
+  if(evt.currentTarget.value){
+    
+  }else{
+    stateAux.formErrors.name= "Please enter a name";
+    
+  }
+  this.setState({ stateAux });
+
+  }
+
   componentDidMount() {
     this.getCountries();
   }
@@ -66,12 +83,17 @@ class CustomForm extends Component<any, any> {
     this.setState({ form: { country: e.target.value } });
   }
 
+  
+  
+ 
   render() {
     const { form, formErrors, countryList } = this.state;
-    let countryOptions = this.state.countryList.map(function (countryName : string) {
-      return {value : countryName, label: countryName};
+    let countryOptions = this.state.countryList.map(function (
+      countryName: string
+    ) {
+      return { value: countryName, label: countryName };
     });
-    console.log(countryOptions);
+   
     return (
       <>
         <div className="signup-box">
@@ -82,7 +104,16 @@ class CustomForm extends Component<any, any> {
                 <label>
                   Name:<span className="asterisk">*</span>
                 </label>
-                <input className="form-control" type="text" name="name" />
+                <input
+                  className="form-control"
+                  type="text"
+                  name="name"
+                  value={form.name}
+                  onChange={this.validateField}
+                />
+                {formErrors.name && (
+                  <span className="err">{formErrors.name}</span>
+                )}
               </div>
               <div className="form-group">
                 <label>
@@ -145,15 +176,13 @@ class CustomForm extends Component<any, any> {
                 <label>
                   Country:<span className="asterisk">*</span>
                 </label>
-                <Select name="country" options={countryOptions}
-                
-                />
+                <Select name="country" options={countryOptions} />
               </div>
             </div>
           </div>
 
           <div className="form-group">
-            <input type="button" className="btn btn-primary" value="Submit" />
+            <input type="button" className="btn btn-primary" value="Submit"  />
           </div>
         </div>
       </>
