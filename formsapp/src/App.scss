@@ -1,10 +1,161 @@
+@import url("https://fonts.googleapis.com/css?family=Work+Sans:400,700,900");
+
+.App {
+  text-align: center;
+  color: #000;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+  text-decoration: none;
+}
+.App-logo:hover {
+  text-decoration: none;
+}
+
+.App-logo:link {
+  text-decoration: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-float infinite 3s ease-in-out;
+    text-decoration: none;
+  }
+}
+
+.App-header {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+}
+
+.App-link {
+  color: rgb(112, 76, 182);
+}
+
+@keyframes App-logo-float {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.container-main {
+  margin: 3em 3em;
+  display: flex;
+  justify-content: center;
+}
+
+.previous {
+  background-color: #f1f1f1;
+  color: black;
+}
+
+.button-add-wish {
+  font-family: "Work Sans", sans-serif;
+  background: #0b8793 !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+  margin: 0 8px !important;
+}
+
+.button-previous {
+  font-family: "Work Sans", sans-serif;
+  background: #0b8793 !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+}
+
+.left-btn-title {
+  position: fixed;
+  left: 15px;
+  display: flex;
+}
+
+.input-size {
+  width: 80% !important;
+}
+
+.left-btn {
+  margin-left: auto !important;
+  order: 2 !important;
+}
+
+.prev {
+  clear: both;
+  margin: 0 auto;
+  width: 100%;
+  margin: 40px 0 !important;
+}
+
+.addnew-title {
+  margin-left: 2.5em;
+  font-size: 1.5em;
+}
+
+@media all and (min-width: 400px) and (max-width: 3000px) {
+  /* put your css styles in here */
+
+  .addnew-title {
+    margin: 0 auto;
+  }
+}
+
+
+@media all and (min-width:0px) and (max-width: 399px) {
+  /* put your css styles in here */
+  body{
+    overflow: hidden;
+    overflow-x: hidden;
+  }
+  .left-btn-title{
+    clear: both;
+    margin: 0;
+    width: 100%;
+    display: flex;
+
+  }
+  
+  .app{
+    overflow: hidden;
+    overflow-x: hidden;
+  }
+
+  #root{
+    overflow: hidden;
+    overflow-x: hidden;
+  }
+  .addnew-title {
+    margin: 0 auto;
+  }
+
+  .form-mobile{
+    display: flex;
+    flex-wrap: wrap;
+    clear: both;
+    margin: auto;
+    width: 100%;
+    margin-top: 40px;
+  }
+}
+
 @import url('https://fonts.googleapis.com/css?family=Cormorant+Garamond:400,700|Montserrat:400,500,600,700');
 
 $primaryColor: #728B5E;
 $primaryColorLighter: #B1C89F;
 $primaryColorDarker: #455F30;
 $secondaryColor: #aaaaaa;
-$secondaryColorLighter: #eeeeee;
+$secondaryColorLighter: #000;
 $lightContrastColor: #efefef;
 $mediumContrastColor: #a4a4a4;
 $darkContrastColor: #4a4a4a;
@@ -13,10 +164,10 @@ $fontFamily: 'Montserrat', sans-serif;
 $fontFamilyCursive: $fontFamily;
 $fontFamilyCondensed: 'Cormorant Garamond', serif;
 
-$headingColors: ($darkContrastColor, $primaryColor, $primaryColorLighter, $darkContrastColor, $primaryColor, $mediumContrastColor);
-$headingSizes: (32px, 18px, 14px, 27px, 16px, 16px);
-$headingWeights: (700, 400, 400, 400, 600, 400);
-$headingFontFamilys: ($fontFamilyCondensed, $fontFamily, $fontFamily, $fontFamilyCondensed, $fontFamily, $fontFamily);
+$headingColors: ($secondaryColorLighter, $primaryColor, $primaryColorLighter, $secondaryColorLighter, $secondaryColorLighter, $secondaryColorLighter);
+$headingSizes: (32px, 18px, 14px, 27px, 16px, 22px);
+$headingWeights: (700, 400, 400, 400, 600, 700);
+$headingFontFamilys: ($fontFamilyCondensed, $fontFamily, $fontFamily, $fontFamilyCondensed, $fontFamily, $fontFamilyCondensed);
 $headingTransforms: (none, uppercase, uppercase, none, none, none);
 $headingLetterSpacings: (1px, 1px, 1px, 1px, 1px, 1px);
 

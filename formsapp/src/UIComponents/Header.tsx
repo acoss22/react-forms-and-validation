@@ -1,15 +1,15 @@
+import React, { Component } from "react";
+import "./Header.scss";
 
-interface IHeader {
-  name: string;
-//   onClicked?
+
+class Header extends Component {
+  render() {
+    return (
+      <div className="header">
+        <h1>Form Reactjs App</h1>
+      </div>
+    );
+  }
 }
 
-export const Header = ({ name }: IHeader) => {
- 
-
-  return (
-   <h1>
-      {name} 
-    </h1>
-  );
-};
+export default Header;

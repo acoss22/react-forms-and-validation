@@ -1,0 +1,18 @@
+
+@import url('https://fonts.googleapis.com/css?family=Work+Sans:400,700,900');
+
+$anim-text-offset: 1em;
+
+body{
+  font-family: 'Work Sans', sans-serif;
+  text-align: center;
+  margin: 0;
+  text-align: center;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
