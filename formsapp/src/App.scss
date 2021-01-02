@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css?family=Cormorant+Garamond:400,700|Montserrat:400,500,600,700');
+
+$primaryColor: #728B5E;
+$primaryColorLighter: #B1C89F;
+$primaryColorDarker: #455F30;
+$secondaryColor: #aaaaaa;
+$secondaryColorLighter: #eeeeee;
+$lightContrastColor: #efefef;
+$mediumContrastColor: #a4a4a4;
+$darkContrastColor: #4a4a4a;
+
+$fontFamily: 'Montserrat', sans-serif;
+$fontFamilyCursive: $fontFamily;
+$fontFamilyCondensed: 'Cormorant Garamond', serif;
+
+$headingColors: ($darkContrastColor, $primaryColor, $primaryColorLighter, $darkContrastColor, $primaryColor, $mediumContrastColor);
+$headingSizes: (32px, 18px, 14px, 27px, 16px, 16px);
+$headingWeights: (700, 400, 400, 400, 600, 400);
+$headingFontFamilys: ($fontFamilyCondensed, $fontFamily, $fontFamily, $fontFamilyCondensed, $fontFamily, $fontFamily);
+$headingTransforms: (none, uppercase, uppercase, none, none, none);
+$headingLetterSpacings: (1px, 1px, 1px, 1px, 1px, 1px);
+
+@for $i from 1 through 6 {
+	h#{$i} {
+		font-family:    nth($headingFontFamilys, $i);
+    font-size:      nth($headingSizes, $i);
+    font-weight:    nth($headingWeights, $i);
+    text-transform: nth($headingTransforms, $i);
+    letter-spacing: nth($headingLetterSpacings, $i);
+    color:          nth($headingColors, $i);
+	}
+}
