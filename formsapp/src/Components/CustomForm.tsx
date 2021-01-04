@@ -41,6 +41,7 @@ class CustomForm extends Component<any, any> {
         language: [],
         country: null,
         zipCode: "",
+      
       },
       formErrors: {
         name: null,
@@ -55,6 +56,8 @@ class CustomForm extends Component<any, any> {
       },
       countryList: Array<string>(),
       languageList: Array<ILanguage>(),
+      selectedCountry: "",
+      selectedLanguage: ""
     };
   }
 
@@ -202,19 +205,19 @@ class CustomForm extends Component<any, any> {
   }
 
   handleCountryChange(e : countrySelection){
-    const selectedCountry = e.value;
+    var stateAux = { ...this.state };
+    let selectedCountry = e.value;
+    stateAux.form.country = selectedCountry;
     console.log(selectedCountry);
-    var formAux = { ...this.state };
-    formAux.form.country = selectedCountry;
-  
+    this.setState({ stateAux });
   }
 
-
   handleLanguageChange(e: languageSelection){
-    const selectedLanguage = e.value;
+    var stateAux = { ...this.state };
+    let selectedLanguage = e.value;
     console.log(selectedLanguage);
-    var formAux = { ...this.state };
-    formAux.form.language = selectedLanguage;
+    stateAux.form.language = selectedLanguage;
+    this.setState({ stateAux });
   }
 
   isValidPhoneNumber(inputtxt: string) {
@@ -323,6 +326,10 @@ class CustomForm extends Component<any, any> {
     
   };
 
+    loadOptions(){
+      
+    }
+
   render() {
     const { form, formErrors } = this.state;
     let countryOptions = this.state.countryList.map(function (
@@ -338,8 +345,8 @@ class CustomForm extends Component<any, any> {
       return { value: languageName, label: languageName };
     });
 
-    console.log("countryOptions " + JSON.stringify(countryOptions));
-    console.log("languageOptions " + JSON.stringify(languageOptions));
+    // console.log("countryOptions " + JSON.stringify(countryOptions));
+    // console.log("languageOptions " + JSON.stringify(languageOptions));
     return (
       <>
         <div className="signup-box">
@@ -488,10 +495,11 @@ class CustomForm extends Component<any, any> {
                 <label>
                   Country:<span className="asterisk">*</span>
                 </label>
-                <Select name="country" defaultValue={countryOptions[1]}  options={countryOptions} value={form.country} onChange={(e) => {
+                <Select name="country" defaultValue={countryOptions[1]}  options={countryOptions} 
+                value={this.state.selectedCountry}
+                onChange={(e) => {
                   this.handleCountryChange({value : e.value, label: e.value })
                 }}
-
                 />
                 {this.state.formErrors.country && (
                   <span className="err">{this.state.formErrors.country}</span>
