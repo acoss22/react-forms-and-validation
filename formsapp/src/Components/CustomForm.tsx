@@ -15,6 +15,17 @@ interface ILanguageCountry {
   name: string;
  }
 
+ interface countrySelection{
+  value: string;
+  label:string;
+ }
+
+ interface languageSelection{
+  value: string;
+  label:string;
+ }
+ 
+ type HtmlEvent = React.ChangeEvent<HTMLSelectElement>;
 class CustomForm extends Component<any, any> {
   constructor(props: any) {
     super(props);
@@ -190,19 +201,20 @@ class CustomForm extends Component<any, any> {
     });
   }
 
-  handleCountryChange(e: React.ChangeEvent<HTMLInputElement>) {
-    var formAux = { ...this.state.form };
-    formAux.country = e.target.value;
-    this.setState({ formAux });
-    this.setState({ form: { country: e.target.value } });
+  handleCountryChange(e : countrySelection){
+    const selectedCountry = e.value;
+    console.log(selectedCountry);
+    var formAux = { ...this.state };
+    formAux.form.country = selectedCountry;
+  
   }
 
-  handleLanguageChange(e: React.ChangeEvent<HTMLInputElement>){
-    var formAux = { ...this.state.form };
-    formAux.language = e.target.value;
-    this.setState({ formAux });
-    this.setState({ form: { language: e.target.value } });
 
+  handleLanguageChange(e: languageSelection){
+    const selectedLanguage = e.value;
+    console.log(selectedLanguage);
+    var formAux = { ...this.state };
+    formAux.form.language = selectedLanguage;
   }
 
   isValidPhoneNumber(inputtxt: string) {
@@ -258,7 +270,7 @@ class CustomForm extends Component<any, any> {
   validateLanguageSelection() {
     var stateAux = { ...this.state };
 
-    if (stateAux.form.language !== "") {
+    if (stateAux.form.language) {
     } else {
       stateAux.formErrors.language = "Please select a language!";
     }
@@ -319,12 +331,15 @@ class CustomForm extends Component<any, any> {
       return { value: countryName, label: countryName };
     });
 
+
     let languageOptions = this.state.languageList.map(function (
       languageName: string
     ) {
       return { value: languageName, label: languageName };
     });
 
+    console.log("countryOptions " + JSON.stringify(countryOptions));
+    console.log("languageOptions " + JSON.stringify(languageOptions));
     return (
       <>
         <div className="signup-box">
@@ -339,11 +354,11 @@ class CustomForm extends Component<any, any> {
                   className="form-control"
                   type="text"
                   name="name"
-                  value={form.name}
+                  value={this.state.form.name}
                   onChange={this.validateName}
                 />
                 {formErrors.name && (
-                  <span className="err">{formErrors.name}</span>
+                  <span className="err">{this.state.formErrors.name}</span>
                 )}
               </div>
               <div className="form-group">
@@ -358,7 +373,7 @@ class CustomForm extends Component<any, any> {
                   onChange={this.validateEmail}
                 />
                 {formErrors.email && (
-                  <span className="err">{formErrors.email}</span>
+                  <span className="err">{this.state.formErrors.email}</span>
                 )}
               </div>
               <div className="form-group">
@@ -369,11 +384,11 @@ class CustomForm extends Component<any, any> {
                   className="form-control"
                   type="password"
                   name="password"
-                  value={form.password}
+                  value={this.state.form.password}
                   onChange={this.validatePassword}
                 />
                 {formErrors.password && (
-                  <span className="err">{formErrors.password}</span>
+                  <span className="err">{this.state.formErrors.password}</span>
                 )}
               </div>
               <div className="form-group">
@@ -384,19 +399,21 @@ class CustomForm extends Component<any, any> {
                   className="form-control"
                   type="password"
                   name="confirmPassword"
-                  value={form.confirmPassword}
+                  value={this.state.form.confirmPassword}
                   onChange={this.confirmPassword}
                 />
-                {formErrors.confirmPassword && (
-                  <span className="err">{formErrors.confirmPassword}</span>
+                {this.state.formErrors.confirmPassword && (
+                  <span className="err">{this.state.formErrors.confirmPassword}</span>
                 )}
               </div>
               <div className="form-group">
                 <label className="mr-3">
                   Language:<span className="asterisk">*</span></label>
-                  <Select name="language" options={languageOptions} value={form.language} onChange={this.handleLanguageChange} />
-                {formErrors.language && (
-                  <span className="err">{formErrors.language}</span>
+                  <Select name="language" options={languageOptions} value={this.state.form.language}  onChange={(e) => {
+                  this.handleLanguageChange({value : e.value, label: e.value })
+                }} />
+                {this.state.formErrors.language && (
+                  <span className="err">{this.state.formErrors.language}</span>
                 )}
              
                 <div className="form-control border-0 p-0 pt-1"></div>
@@ -411,11 +428,11 @@ class CustomForm extends Component<any, any> {
                   className="form-control"
                   type="number"
                   name="phonenumber"
-                  value={form.phonenumber}
+                  value={this.state.form.phonenumber}
                   onChange={this.validatePhoneNumber}
                 />
                 {formErrors.phonenumber && (
-                  <span className="err">{formErrors.phonenumber}</span>
+                  <span className="err">{this.state.formErrors.phonenumber}</span>
                 )}
               </div>
               <div className="form-group">
@@ -451,12 +468,11 @@ class CustomForm extends Component<any, any> {
                     Other
                   </label>
 
-                  {formErrors.gender && (
+                  {this.state.formErrors.gender && (
                     <span
                       style={{ clear: "both", display: "block" }}
-                      className="err"
-                    >
-                      {formErrors.gender}
+                      className="err">
+                      {this.state.formErrors.gender}
                     </span>
                   )}
                 </div>
@@ -464,17 +480,21 @@ class CustomForm extends Component<any, any> {
               <div className="form-group">
                 <label>Zip Code:</label>
                 <input className="form-control" type="text" name="zipCode" value={form.zipCode} onChange={this.validateZipCode}/>
-                {formErrors.zipCode && (
-                  <span className="err">{formErrors.zipCode}</span>
+                {this.state.formErrors.zipCode && (
+                  <span className="err">{this.state.formErrors.zipCode}</span>
                 )}
               </div>
               <div className="form-group">
                 <label>
                   Country:<span className="asterisk">*</span>
                 </label>
-                <Select name="country" options={countryOptions} value={form.country} onChange={this.handleCountryChange} />
-                {formErrors.country && (
-                  <span className="err">{formErrors.country}</span>
+                <Select name="country" defaultValue={countryOptions[1]}  options={countryOptions} value={form.country} onChange={(e) => {
+                  this.handleCountryChange({value : e.value, label: e.value })
+                }}
+
+                />
+                {this.state.formErrors.country && (
+                  <span className="err">{this.state.formErrors.country}</span>
                 )}
               </div>
             </div>
