@@ -11,8 +11,9 @@ function App() {
       <div className="content">
           <Header />
           <CustomForm />
-          </div>
           <Footer />
+          </div>
+       
     </div>
   );
 }
