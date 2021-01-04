@@ -7,6 +7,13 @@ import { stat } from "fs";
 interface ICountry {
   name: string;
 }
+interface ILanguageCountry {
+  languages: Array<ILanguage>;
+ }
+ 
+ interface ILanguage {
+  name: string;
+ }
 
 class CustomForm extends Component<any, any> {
   constructor(props: any) {
@@ -33,8 +40,10 @@ class CustomForm extends Component<any, any> {
         gender: null,
         language: null,
         country: null,
+        zipCode: null
       },
       countryList: Array<string>(),
+      languageList: Array<ILanguage>(),
     };
   }
 
@@ -133,7 +142,7 @@ class CustomForm extends Component<any, any> {
     const currentConfirmPassword = evt.target.value;
     stateAux.form.confirmPassword = currentConfirmPassword;
     stateAux.formErrors.confirmPassword = "";
-    if (stateAux.form.confirmPassword == stateAux.form.password) {
+    if (stateAux.form.confirmPassword === stateAux.form.password) {
     } else {
       stateAux.formErrors.confirmPassword =
         "Please make sure your passwords match.";
@@ -143,7 +152,9 @@ class CustomForm extends Component<any, any> {
 
   componentDidMount() {
     this.getCountries();
+    this.getSpokenLanguages();
   }
+
 
   getCountries() {
     axios.get("https://restcountries.eu/rest/v2/all").then((res) => {
@@ -156,6 +167,26 @@ class CustomForm extends Component<any, any> {
       });
 
       this.setState({ countryList: countryNames });
+    });
+  }
+
+  getSpokenLanguages() {
+    
+    axios.get("https://restcountries.eu/rest/v2/all").then((res) => {
+    
+      const languagesAux: Array<ILanguageCountry> = res.data;
+      const spokenLanguages: Array<string> = [];
+
+      languagesAux.forEach(country => {
+        country.languages.forEach(lang => {
+        
+       if(spokenLanguages.filter(s => s == lang.name).length == 0) {
+              spokenLanguages.push(lang.name);
+            }
+     });
+    });
+      spokenLanguages.sort();
+      this.setState({ languageList: spokenLanguages });
     });
   }
 
@@ -189,14 +220,14 @@ class CustomForm extends Component<any, any> {
 
   setGender = (evt: React.ChangeEvent<HTMLInputElement>) => {
     var stateAux = { ...this.state };
-    stateAux.form.gender= evt.target.value;
+    stateAux.form.gender = evt.target.value;
 
     this.validateGender();
-  }
+  };
 
   validateGender = () => {
     var stateAux = { ...this.state };
-  
+
     if (stateAux.form.gender) {
       stateAux.formErrors.gender = "";
     } else {
@@ -206,17 +237,71 @@ class CustomForm extends Component<any, any> {
     this.setState({ stateAux });
   };
 
-  submit= () => {
-    this.validateGender();
+  validateCountrySelection() {
+    var stateAux = { ...this.state };
+
+    if (stateAux.form.country) {
+    } else {
+      stateAux.formErrors.country = "Please select a country!";
+    }
+    this.setState({ stateAux });
+  };
+
+  validateZipCode = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    /* For now validation is for US Zip codes 
+    /(^\d{5}$)|(^\d{5}-\d{4}$)/
+    */
+    var stateAux = { ...this.state };
+    const isValidZipCode = /(^\d{5}$)|(^\d{5}-\d{4}$)/;
+    stateAux.form.zipCode = evt.target.value;
+    stateAux.formErrors.zipCode = "";
+
+    if (isValidZipCode.test(evt.target.value)) {
+    } else {
+      stateAux.formErrors.zipCode = "Please enter a valid zip code! Example: 22313"; 
+    }
+    this.setState({ stateAux });
+  };
+
+  requiredFields(){
+    var stateAux = { ...this.state };
+    
+    if(!stateAux.form.name){
+      stateAux.formErrors.name = "Please enter a name";
+    }
+    if(!stateAux.form.password && !stateAux.form.confirmPassword){
+      stateAux.formErrors.password = "Please enter a password";
+      stateAux.formErrors.confirmPassword =  "Please enter a password";
+    }
+    if(!stateAux.form.email){
+      stateAux.formErrors.email = "Please enter an email";
+    }
+    if(!stateAux.form.phonenumber){
+      stateAux.formErrors.phonenumber = "Please enter a phone number";
+    }
+    if(!stateAux.formErrors.zipCode){
+      stateAux.formErrors.zipCode = "Please enter a zip code";
+    }
   }
 
+  submit = () => {
+    this.validateGender();
+    this.validateCountrySelection();
+    this.requiredFields();
+  };
 
   render() {
-    const { form, formErrors, countryList } = this.state;
+    const { form, formErrors } = this.state;
     let countryOptions = this.state.countryList.map(function (
       countryName: string
     ) {
       return { value: countryName, label: countryName };
+    });
+
+    let languageOptions = this.state.languageList.map(function (
+      languageName: string
+    ) {
+      return { value: languageName, label: languageName };
     });
 
     return (
@@ -288,6 +373,10 @@ class CustomForm extends Component<any, any> {
               <div className="form-group">
                 <label className="mr-3">
                   Language:<span className="asterisk">*</span>
+                  <Select name="language" options={languageOptions} />
+                {formErrors.country && (
+                  <span className="err">{formErrors.language}</span>
+                )}
                 </label>
                 <div className="form-control border-0 p-0 pt-1"></div>
               </div>
@@ -318,7 +407,6 @@ class CustomForm extends Component<any, any> {
                       type="radio"
                       name="gender"
                       value="male"
-                 
                       onChange={this.setGender}
                     />{" "}
                     Male
@@ -328,7 +416,6 @@ class CustomForm extends Component<any, any> {
                       type="radio"
                       name="gender"
                       value="female"
-                    
                       onChange={this.setGender}
                     />{" "}
                     Female
@@ -338,26 +425,36 @@ class CustomForm extends Component<any, any> {
                       type="radio"
                       name="gender"
                       value="other"
-                      
                       onChange={this.setGender}
                     />{" "}
                     Other
                   </label>
-               
+
                   {formErrors.gender && (
-                  <span style={{clear: "both", display: "block"}} className="err">{formErrors.gender}</span>
-                )}
+                    <span
+                      style={{ clear: "both", display: "block" }}
+                      className="err"
+                    >
+                      {formErrors.gender}
+                    </span>
+                  )}
                 </div>
               </div>
               <div className="form-group">
                 <label>Zip Code:</label>
-                <input className="form-control" type="text" name="zipCode" />
+                <input className="form-control" type="text" name="zipCode" value={form.zipCode} onChange={this.validateZipCode}/>
+                {formErrors.zipCode && (
+                  <span className="err">{formErrors.zipCode}</span>
+                )}
               </div>
               <div className="form-group">
                 <label>
                   Country:<span className="asterisk">*</span>
                 </label>
                 <Select name="country" options={countryOptions} />
+                {formErrors.country && (
+                  <span className="err">{formErrors.country}</span>
+                )}
               </div>
             </div>
           </div>
