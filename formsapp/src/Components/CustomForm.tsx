@@ -56,8 +56,7 @@ class CustomForm extends Component<any, any> {
       },
       countryList: Array<string>(),
       languageList: Array<ILanguage>(),
-      selectedCountry: "",
-      selectedLanguage: ""
+    
     };
   }
 
@@ -210,6 +209,7 @@ class CustomForm extends Component<any, any> {
     stateAux.form.country = selectedCountry;
     console.log(selectedCountry);
     this.setState({ stateAux });
+    this.validateCountrySelection();
   }
 
   handleLanguageChange(e: languageSelection){
@@ -218,6 +218,7 @@ class CustomForm extends Component<any, any> {
     console.log(selectedLanguage);
     stateAux.form.language = selectedLanguage;
     this.setState({ stateAux });
+    this.validateLanguageSelection();
   }
 
   isValidPhoneNumber(inputtxt: string) {
@@ -262,7 +263,7 @@ class CustomForm extends Component<any, any> {
 
   validateCountrySelection() {
     var stateAux = { ...this.state };
-
+    stateAux.formErrors.country="";
     if (stateAux.form.country) {
     } else {
       stateAux.formErrors.country = "Please select a country!";
@@ -272,9 +273,15 @@ class CustomForm extends Component<any, any> {
 
   validateLanguageSelection() {
     var stateAux = { ...this.state };
-
-    if (stateAux.form.language) {
+    stateAux.formErrors.language="";
+  
+ 
+    if (stateAux.form.language.length > 0) {
+      console.log("has value!");
     } else {
+      
+      console.log("NO value!");
+    
       stateAux.formErrors.language = "Please select a language!";
     }
     this.setState({ stateAux });
@@ -416,7 +423,10 @@ class CustomForm extends Component<any, any> {
               <div className="form-group">
                 <label className="mr-3">
                   Language:<span className="asterisk">*</span></label>
-                  <Select name="language" options={languageOptions} value={this.state.form.language}  onChange={(e) => {
+                  <Select name="language" 
+                  options={languageOptions} 
+                  value={this.state.form.selectedLanguage} 
+                   onChange={(e) => {
                   this.handleLanguageChange({value : e.value, label: e.value })
                 }} />
                 {this.state.formErrors.language && (
@@ -495,8 +505,10 @@ class CustomForm extends Component<any, any> {
                 <label>
                   Country:<span className="asterisk">*</span>
                 </label>
-                <Select name="country" defaultValue={countryOptions[1]}  options={countryOptions} 
-                value={this.state.selectedCountry}
+                <Select name="country" 
+              
+                options={countryOptions} 
+                value={this.state.form.selectedCountry}
                 onChange={(e) => {
                   this.handleCountryChange({value : e.value, label: e.value })
                 }}
