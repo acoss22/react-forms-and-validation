@@ -197,6 +197,14 @@ class CustomForm extends Component<any, any> {
     this.setState({ form: { country: e.target.value } });
   }
 
+  handleLanguageChange(e: React.ChangeEvent<HTMLInputElement>){
+    var formAux = { ...this.state.form };
+    formAux.language = e.target.value;
+    this.setState({ formAux });
+    this.setState({ form: { language: e.target.value } });
+
+  }
+
   isValidPhoneNumber(inputtxt: string) {
     var phoneno = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{3})$/;
     if (phoneno.test(inputtxt)) {
@@ -247,6 +255,16 @@ class CustomForm extends Component<any, any> {
     this.setState({ stateAux });
   };
 
+  validateLanguageSelection() {
+    var stateAux = { ...this.state };
+
+    if (stateAux.form.language !== "") {
+    } else {
+      stateAux.formErrors.language = "Please select a language!";
+    }
+    this.setState({ stateAux });
+  };
+
   validateZipCode = (evt: React.ChangeEvent<HTMLInputElement>) => {
     /* For now validation is for US Zip codes 
     /(^\d{5}$)|(^\d{5}-\d{4}$)/
@@ -282,12 +300,15 @@ class CustomForm extends Component<any, any> {
     if(!stateAux.formErrors.zipCode){
       stateAux.formErrors.zipCode = "Please enter a zip code";
     }
+ 
   }
 
   submit = () => {
     this.validateGender();
     this.validateCountrySelection();
+    this.validateLanguageSelection();
     this.requiredFields();
+    
   };
 
   render() {
@@ -372,12 +393,12 @@ class CustomForm extends Component<any, any> {
               </div>
               <div className="form-group">
                 <label className="mr-3">
-                  Language:<span className="asterisk">*</span>
-                  <Select name="language" options={languageOptions} />
-                {formErrors.country && (
+                  Language:<span className="asterisk">*</span></label>
+                  <Select name="language" options={languageOptions} value={form.language} onChange={this.handleLanguageChange} />
+                {formErrors.language && (
                   <span className="err">{formErrors.language}</span>
                 )}
-                </label>
+             
                 <div className="form-control border-0 p-0 pt-1"></div>
               </div>
             </div>
@@ -451,7 +472,7 @@ class CustomForm extends Component<any, any> {
                 <label>
                   Country:<span className="asterisk">*</span>
                 </label>
-                <Select name="country" options={countryOptions} />
+                <Select name="country" options={countryOptions} value={form.country} onChange={this.handleCountryChange} />
                 {formErrors.country && (
                   <span className="err">{formErrors.country}</span>
                 )}
