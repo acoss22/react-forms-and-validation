@@ -41,6 +41,7 @@ class CustomForm extends Component<any, any> {
         language: [],
         country: null,
         zipCode: "",
+        description: ""
       
       },
       formErrors: {
@@ -52,7 +53,8 @@ class CustomForm extends Component<any, any> {
         gender: null,
         language: null,
         country: null,
-        zipCode: null
+        zipCode: null,
+        description: ""
       },
       countryList: Array<string>(),
       languageList: Array<ILanguage>(),
@@ -71,6 +73,19 @@ class CustomForm extends Component<any, any> {
     }
     this.setState({ stateAux });
   };
+
+  validateDescription = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
+    var stateAux = { ...this.state };
+    stateAux.form.description = evt.target.value;
+
+    if (evt.currentTarget.value) {
+      stateAux.formErrors.description = "";
+    } else {
+      stateAux.formErrors.description = "Please enter a description";
+    }
+    this.setState({ stateAux });
+  };
+
 
   validateEmail = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const regexp = new RegExp(
@@ -322,6 +337,9 @@ class CustomForm extends Component<any, any> {
     if(!stateAux.formErrors.zipCode){
       stateAux.formErrors.zipCode = "Please enter a zip code";
     }
+    if(!stateAux.formErrors.description){
+      stateAux.formErrors.description = "Please enter a description";
+    }
  
   }
 
@@ -516,6 +534,21 @@ class CustomForm extends Component<any, any> {
                 {this.state.formErrors.country && (
                   <span className="err">{this.state.formErrors.country}</span>
                 )}
+              </div>
+              <div className="form-group">
+                <label>
+                  Description:<span className="asterisk">*</span>
+                </label>
+                <textarea className="form-control" 
+                style={{resize: "none"}}
+                id="exampleFormControlTextarea1" 
+                value={this.state.form.description}
+                onChange={this.validateDescription}
+                rows={2} 
+                />
+             {this.state.formErrors.description && (
+               <span className="err">{this.state.formErrors.description}</span>
+             )}
               </div>
             </div>
           </div>
