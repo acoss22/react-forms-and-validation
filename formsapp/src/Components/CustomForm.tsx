@@ -2,30 +2,37 @@ import React, { Component } from "react";
 import "./CustomForm.scss";
 import Select from "react-select";
 import axios from "axios";
-import { stat } from "fs";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import TextField from "@material-ui/core/TextField";
 
 interface ICountry {
   name: string;
 }
 interface ILanguageCountry {
   languages: Array<ILanguage>;
- }
- 
- interface ILanguage {
+}
+
+interface ILanguage {
   name: string;
- }
+}
 
- interface countrySelection{
+interface countrySelection {
   value: string;
-  label:string;
- }
+  label: string;
+}
 
- interface languageSelection{
+interface languageSelection {
   value: string;
-  label:string;
- }
- 
- type HtmlEvent = React.ChangeEvent<HTMLSelectElement>;
+  label: string;
+}
+
+interface dateBeginSelection {
+  value: string;
+  label: string;
+}
+
+type HtmlEvent = React.ChangeEvent<HTMLSelectElement>;
+
 class CustomForm extends Component<any, any> {
   constructor(props: any) {
     super(props);
@@ -41,8 +48,12 @@ class CustomForm extends Component<any, any> {
         language: [],
         country: null,
         zipCode: "",
-        description: ""
-      
+        description: "",
+        dateBegin: "",
+        dateEnd: "",
+        totalDate: "",
+        HourBegin: "",
+        HourEnd: ""
       },
       formErrors: {
         name: null,
@@ -54,11 +65,15 @@ class CustomForm extends Component<any, any> {
         language: null,
         country: null,
         zipCode: null,
-        description: ""
+        description: "",
+        dateBegin: "",
+        dateEnd: "",
+        totalDate: "",
+        HourBegin: "",
+        HourEnd: ""
       },
       countryList: Array<string>(),
       languageList: Array<ILanguage>(),
-    
     };
   }
 
@@ -85,7 +100,6 @@ class CustomForm extends Component<any, any> {
     }
     this.setState({ stateAux });
   };
-
 
   validateEmail = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const regexp = new RegExp(
@@ -183,7 +197,6 @@ class CustomForm extends Component<any, any> {
     this.getSpokenLanguages();
   }
 
-
   getCountries() {
     axios.get("https://restcountries.eu/rest/v2/all").then((res) => {
       const countries: ICountry[] = res.data;
@@ -199,41 +212,56 @@ class CustomForm extends Component<any, any> {
   }
 
   getSpokenLanguages() {
-    
     axios.get("https://restcountries.eu/rest/v2/all").then((res) => {
-    
       const languagesAux: Array<ILanguageCountry> = res.data;
       const spokenLanguages: Array<string> = [];
 
-      languagesAux.forEach(country => {
-        country.languages.forEach(lang => {
-        
-       if(spokenLanguages.filter(s => s == lang.name).length == 0) {
-              spokenLanguages.push(lang.name);
-            }
-     });
-    });
+      languagesAux.forEach((country) => {
+        country.languages.forEach((lang) => {
+          if (spokenLanguages.filter((s) => s == lang.name).length == 0) {
+            spokenLanguages.push(lang.name);
+          }
+        });
+      });
       spokenLanguages.sort();
       this.setState({ languageList: spokenLanguages });
     });
   }
 
-  handleCountryChange(e : countrySelection){
+  handleCountryChange(e: countrySelection) {
     var stateAux = { ...this.state };
     let selectedCountry = e.value;
     stateAux.form.country = selectedCountry;
-    console.log(selectedCountry);
+
     this.setState({ stateAux });
     this.validateCountrySelection();
   }
 
-  handleLanguageChange(e: languageSelection){
+  handleLanguageChange(e: languageSelection) {
     var stateAux = { ...this.state };
     let selectedLanguage = e.value;
-    console.log(selectedLanguage);
+   
     stateAux.form.language = selectedLanguage;
     this.setState({ stateAux });
     this.validateLanguageSelection();
+  }
+
+  handleDateBeginChange= (evt: React.ChangeEvent<HTMLInputElement>) => {
+    var stateAux = { ...this.state };
+    let selectedDate = evt.target.value;
+    console.log(selectedDate);
+    stateAux.form.dateBegin = selectedDate;
+    this.setState({ stateAux });
+ 
+  }
+
+  handleDateEndChange= (evt: React.ChangeEvent<HTMLInputElement>) => {
+    var stateAux = { ...this.state };
+    let selectedDate = evt.target.value;
+    console.log(selectedDate);
+    stateAux.form.dateEnd = selectedDate;
+    this.setState({ stateAux });
+ 
   }
 
   isValidPhoneNumber(inputtxt: string) {
@@ -278,29 +306,27 @@ class CustomForm extends Component<any, any> {
 
   validateCountrySelection() {
     var stateAux = { ...this.state };
-    stateAux.formErrors.country="";
+    stateAux.formErrors.country = "";
     if (stateAux.form.country) {
     } else {
       stateAux.formErrors.country = "Please select a country!";
     }
     this.setState({ stateAux });
-  };
+  }
 
   validateLanguageSelection() {
     var stateAux = { ...this.state };
-    stateAux.formErrors.language="";
-  
- 
+    stateAux.formErrors.language = "";
+
     if (stateAux.form.language.length > 0) {
       console.log("has value!");
     } else {
-      
       console.log("NO value!");
-    
+
       stateAux.formErrors.language = "Please select a language!";
     }
     this.setState({ stateAux });
-  };
+  }
 
   validateZipCode = (evt: React.ChangeEvent<HTMLInputElement>) => {
     /* For now validation is for US Zip codes 
@@ -313,34 +339,36 @@ class CustomForm extends Component<any, any> {
 
     if (isValidZipCode.test(evt.target.value)) {
     } else {
-      stateAux.formErrors.zipCode = "Please enter a valid zip code! Example: 22313"; 
+      stateAux.formErrors.zipCode =
+        "Please enter a valid zip code! Example: 22313";
     }
     this.setState({ stateAux });
   };
 
-  requiredFields(){
+
+
+  requiredFields() {
     var stateAux = { ...this.state };
-    
-    if(!stateAux.form.name){
+
+    if (!stateAux.form.name) {
       stateAux.formErrors.name = "Please enter a name";
     }
-    if(!stateAux.form.password && !stateAux.form.confirmPassword){
+    if (!stateAux.form.password && !stateAux.form.confirmPassword) {
       stateAux.formErrors.password = "Please enter a password";
-      stateAux.formErrors.confirmPassword =  "Please enter a password";
+      stateAux.formErrors.confirmPassword = "Please enter a password";
     }
-    if(!stateAux.form.email){
+    if (!stateAux.form.email) {
       stateAux.formErrors.email = "Please enter an email";
     }
-    if(!stateAux.form.phonenumber){
+    if (!stateAux.form.phonenumber) {
       stateAux.formErrors.phonenumber = "Please enter a phone number";
     }
-    if(!stateAux.formErrors.zipCode){
+    if (!stateAux.formErrors.zipCode) {
       stateAux.formErrors.zipCode = "Please enter a zip code";
     }
-    if(!stateAux.formErrors.description){
+    if (!stateAux.formErrors.description) {
       stateAux.formErrors.description = "Please enter a description";
     }
- 
   }
 
   submit = () => {
@@ -348,12 +376,9 @@ class CustomForm extends Component<any, any> {
     this.validateCountrySelection();
     this.validateLanguageSelection();
     this.requiredFields();
-    
   };
 
-    loadOptions(){
-      
-    }
+  loadOptions() {}
 
   render() {
     const { form, formErrors } = this.state;
@@ -362,7 +387,6 @@ class CustomForm extends Component<any, any> {
     ) {
       return { value: countryName, label: countryName };
     });
-
 
     let languageOptions = this.state.languageList.map(function (
       languageName: string
@@ -435,23 +459,44 @@ class CustomForm extends Component<any, any> {
                   onChange={this.confirmPassword}
                 />
                 {this.state.formErrors.confirmPassword && (
-                  <span className="err">{this.state.formErrors.confirmPassword}</span>
+                  <span className="err">
+                    {this.state.formErrors.confirmPassword}
+                  </span>
                 )}
               </div>
               <div className="form-group">
                 <label className="mr-3">
-                  Language:<span className="asterisk">*</span></label>
-                  <Select name="language" 
-                  options={languageOptions} 
-                  value={this.state.form.selectedLanguage} 
-                   onChange={(e) => {
-                  this.handleLanguageChange({value : e.value, label: e.value })
-                }} />
+                  Language:<span className="asterisk">*</span>
+                </label>
+                <Select
+                  name="language"
+                  options={languageOptions}
+                  value={this.state.form.selectedLanguage}
+                  onChange={(e) => {
+                    this.handleLanguageChange({
+                      value: e.value,
+                      label: e.value,
+                    });
+                  }}
+                />
                 {this.state.formErrors.language && (
                   <span className="err">{this.state.formErrors.language}</span>
                 )}
-             
+
                 <div className="form-control border-0 p-0 pt-1"></div>
+              </div>
+              <div className="form-group">
+                <label>
+                  Pick a date<span className="asterisk">*</span>
+                </label>
+                <input
+                  type="date"
+                  id="start"
+                  name="dateBegin"
+                  value={this.state.form.dateBegin}
+                  onChange={this.handleDateBeginChange}
+                 
+                />
               </div>
             </div>
             <div className="col-md-6">
@@ -467,7 +512,9 @@ class CustomForm extends Component<any, any> {
                   onChange={this.validatePhoneNumber}
                 />
                 {formErrors.phonenumber && (
-                  <span className="err">{this.state.formErrors.phonenumber}</span>
+                  <span className="err">
+                    {this.state.formErrors.phonenumber}
+                  </span>
                 )}
               </div>
               <div className="form-group">
@@ -506,7 +553,8 @@ class CustomForm extends Component<any, any> {
                   {this.state.formErrors.gender && (
                     <span
                       style={{ clear: "both", display: "block" }}
-                      className="err">
+                      className="err"
+                    >
                       {this.state.formErrors.gender}
                     </span>
                   )}
@@ -514,7 +562,13 @@ class CustomForm extends Component<any, any> {
               </div>
               <div className="form-group">
                 <label>Zip Code:</label>
-                <input className="form-control" type="text" name="zipCode" value={form.zipCode} onChange={this.validateZipCode}/>
+                <input
+                  className="form-control"
+                  type="text"
+                  name="zipCode"
+                  value={form.zipCode}
+                  onChange={this.validateZipCode}
+                />
                 {this.state.formErrors.zipCode && (
                   <span className="err">{this.state.formErrors.zipCode}</span>
                 )}
@@ -523,13 +577,16 @@ class CustomForm extends Component<any, any> {
                 <label>
                   Country:<span className="asterisk">*</span>
                 </label>
-                <Select name="country" 
-              
-                options={countryOptions} 
-                value={this.state.form.selectedCountry}
-                onChange={(e) => {
-                  this.handleCountryChange({value : e.value, label: e.value })
-                }}
+                <Select
+                  name="country"
+                  options={countryOptions}
+                  value={this.state.form.selectedCountry}
+                  onChange={(e) => {
+                    this.handleCountryChange({
+                      value: e.value,
+                      label: e.value,
+                    });
+                  }}
                 />
                 {this.state.formErrors.country && (
                   <span className="err">{this.state.formErrors.country}</span>
@@ -539,27 +596,42 @@ class CustomForm extends Component<any, any> {
                 <label>
                   Description:<span className="asterisk">*</span>
                 </label>
-                <textarea className="form-control" 
-                style={{resize: "none"}}
-                id="exampleFormControlTextarea1" 
-                value={this.state.form.description}
-                onChange={this.validateDescription}
-                rows={2} 
+                <textarea
+                  className="form-control"
+                  style={{ resize: "none" }}
+                  id="exampleFormControlTextarea1"
+                  value={this.state.form.description}
+                  onChange={this.validateDescription}
+                  rows={2}
                 />
-             {this.state.formErrors.description && (
-               <span className="err">{this.state.formErrors.description}</span>
-             )}
+                {this.state.formErrors.description && (
+                  <span className="err">
+                    {this.state.formErrors.description}
+                  </span>
+                )}
               </div>
+              <div className="form-group">
+                <label>
+                  Pick a date<span className="asterisk">*</span>
+                </label>
+                <input
+                  type="date"
+                  id="start"
+                  name="dateEnd"
+                  value={this.state.form.dateEnd}
+                  onChange={this.handleDateEndChange}
+                 
+                />
+              </div>
+              <div className="form-group">
+                <input
+                  type="button"
+                  className="btn btn-primary"
+                  value="Submit"
+                  onClick={this.submit}
+                />
+              </div>{" "}
             </div>
-          </div>
-
-          <div className="form-group">
-            <input
-              type="button"
-              className="btn btn-primary"
-              value="Submit"
-              onClick={this.submit}
-            />
           </div>
         </div>
       </>
